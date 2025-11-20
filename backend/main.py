@@ -1,10 +1,14 @@
 import os
-from typing import List
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+import json
+from typing import List, Optional
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import google.generativeai as genai
 from dotenv import load_dotenv
+from sqlmodel import Session, select
+from database import create_db_and_tables, get_session
+from models import Recipe, User
 
 # Környezeti változók betöltése (.env fájlból)
 load_dotenv()
@@ -36,6 +40,12 @@ app.add_middleware(
 class IngredientRequest(BaseModel):
     ingredients: List[str]
 
+class SaveRecipeRequest(BaseModel):
+    title: str
+    time: str
+    ingredients: List[str]
+    steps: List[str]
+
 @app.get("/")
 def read_root():
     return {"message": "ReceptSéf Backend v1.0 Működik!"}
@@ -66,3 +76,28 @@ async def generate_recipe(request: IngredientRequest):
     except Exception as e:
         print(f"Hiba történt: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/save-recipe")
+def save_recipe(recipe_data: SaveRecipeRequest, session: Session = Depends(get_session)):
+    # Mivel még nincs bejelentkezés, egyelőre "User nélkül" vagy egy teszt userrel mentjük.
+    # A specifikáció szerint JSON-ként vagy szövegként tároljuk a hozzávalókat [cite: 50]
+    
+    new_recipe = Recipe(
+        title=recipe_data.title,
+        time=recipe_data.time,
+        ingredients=json.dumps(recipe_data.ingredients), # Listát JSON stringgé alakítjuk
+        instructions="\n".join(recipe_data.steps),       # Lépéseket összevonjuk szöveggé
+        user_id=None # Később itt lesz a bejelentkezett felhasználó ID-ja
+    )
+    
+    session.add(new_recipe)
+    session.commit()
+    session.refresh(new_recipe)
+    return {"message": "Recept sikeresen mentve!", "id": new_recipe.id}
+
+# --- ÚJ VÉGPONT: Mentett receptek lekérése ---
+@app.get("/recipes")
+def get_recipes(session: Session = Depends(get_session)):
+    recipes = session.exec(select(Recipe)).all()
+    return recipes
+    

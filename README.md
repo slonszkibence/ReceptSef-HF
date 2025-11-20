@@ -48,5 +48,16 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Eszköz:** Google Gemini
 - **Probléma:** A backend logban "404 models/gemini-pro is not found" hibaüzenet jelent meg, a generálás nem működött.
 - **Prompt:** "I am getting a 404 error saying 'models/gemini-pro is not found' when using google-generativeai library. What is the correct model name for the free tier now?"
-- **Eredmény:** Kiderült, hogy a Google frissítette a modelljeit. A kódban a `gemini-pro`-t lecseréltem `gemini-2.5-flash`-re, ami megoldotta a problémát.
+- **Eredmény:** A kódban a `gemini-pro`-t lecseréltem `gemini-2.5-flash`-re, ami megoldotta a problémát.
 
+### 9. Adatbázis Réteg (PostgreSQL + SQLModel)
+- **Eszköz:** Google Gemini
+- **Feladat:** A specifikációban előírt PostgreSQL adatbázis integrálása modern ORM (SQLModel) segítségével.
+- **Prompt:** "Create a `database.py` file using SQLModel to connect to a PostgreSQL database named 'receptsef'. Also define the SQLModel classes for `Recipe` and `User` in `models.py` based on these fields: title, ingredients (json), steps, time."
+- **Eredmény:** Létrejött az adatbázis kapcsolat és az adatmodellek (ORM), a rendszer automatikusan létrehozza a táblákat indításkor.
+
+### 10. Mentés Funkció Implementálása
+- **Eszköz:** Google Gemini
+- **Feladat:** Végpont készítése, amivel a generált recept elmenthető az adatbázisba.
+- **Prompt:** "Create a POST endpoint `/save-recipe` in FastAPI. It should take the recipe data, create a new `Recipe` record using the SQLModel session, and commit it to the database."
+- **Eredmény:** Elkészült a `/save-recipe` végpont, így a generált receptek most már perzisztensen tárolódnak.
