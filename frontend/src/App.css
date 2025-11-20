@@ -1,0 +1,79 @@
+/* frontend/src/App.css */
+
+#root {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  /* Kényszerítjük, hogy az alap szövegszín sötét legyen */
+  color: #213547; 
+  background-color: #ffffff; 
+}
+
+.container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+h1 { color: #2c3e50; }
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  width: 60%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white; /* Input legyen fehér */
+  color: black; /* Input szöveg fekete */
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #42b883;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:disabled { background-color: #ccc; }
+button:hover:not(:disabled) { background-color: #3aa876; }
+
+.recipe-card {
+  text-align: left;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #eee;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  
+  /* ITT A JAVÍTÁS KULCSA: */
+  color: #333333 !important; /* Sötétszürke betűk kényszerítése */
+}
+
+.recipe-card h2 {
+  color: #2c3e50;
+  border-bottom: 2px solid #42b883;
+  padding-bottom: 10px;
+}
+
+.recipe-card ul, .recipe-card ol {
+  padding-left: 20px;
+}
+
+.recipe-card li {
+  margin-bottom: 8px;
+}
+
+.error { color: red; margin-top: 10px; }
