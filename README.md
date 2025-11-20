@@ -79,3 +79,39 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Probléma:** A generálás néha instabil volt, illetve `404 Model not found` és API kulcs hibák léptek fel.
 - **Prompt:** "Update the GenerativeModel configuration to use 'response_mime_type': 'application/json' to guarantee valid JSON output. "
 - **Eredmény:** A `response_mime_type` használatával a Google szervere most már garantáltan JSON-t küld, így a manuális szövegtisztítás feleslegessé vált (bár biztonságból benne maradt). A változónevek javítása után a kommunikáció stabil.
+
+### 14. Felhasználókezelés és Autentikáció (Backend)
+- **Eszköz:** Google Gemini / GitHub Copilot
+- **Feladat:** A specifikációnak megfelelően a regisztráció és bejelentkezés megvalósítása, hogy a receptek felhasználókhoz kötöttek legyenek.
+- **Prompt:** "Implement JWT authentication in FastAPI using `python-jose` and `passlib`. Create `/register` and `/token` endpoints. Update the `User` model to store hashed passwords. Protect the `/save-recipe` route so only logged-in users can save recipes."
+- **Eredmény:** Elkészült a biztonságos autentikáció, a jelszavak hashelve tárolódnak, a védett végpontok JWT tokent várnak.
+
+### 15. Login Felület és Token Kezelés (Frontend)
+- **Eszköz:** Google Gemini
+- **Feladat:** Bejelentkező és regisztrációs képernyő készítése a React oldalon.
+- **Prompt:** "Create a Login/Register view in React. Store the received JWT token in localStorage. Update the `handleSave` function to include the 'Authorization: Bearer <token>' header when sending requests to the backend."
+- **Eredmény:** A frontend kezeli a belépést, a tokent elmenti, és nézetet vált (Login képernyő <-> Alkalmazás) a jogosultság alapján.
+
+### 16. Hibaelhárítás - Bcrypt Kompatibilitás
+- **Eszköz:** Google Gemini
+- **Probléma:** Regisztrációkor `AttributeError: module 'bcrypt' has no attribute '__about__'` hibaüzenet érkezett a `passlib` könyvtárból.
+- **Prompt:** "I am getting an AttributeError related to bcrypt and passlib when hashing passwords. It seems like a version conflict. How do I fix this?"
+- **Eredmény:** A hiba a verziók inkompatibilitása miatt lépett fel. A megoldás a csomagok verziójának rögzítése volt (`passlib[bcrypt]==1.7.4`, `bcrypt==4.0.1`), ami után a regisztráció sikeresen lefutott.
+
+### 17. Kedvencek Listázása és Adattranszformáció
+- **Eszköz:** GitHub Copilot
+- **Feladat:** A mentett receptek megjelenítése a felületen (Read művelet).
+- **Prompt:** "Add a 'Favorites' view to the App. Fetch saved recipes from `GET /recipes`. Note that ingredients and steps are stored as JSON strings in the database, so `JSON.parse` them back to arrays before rendering the list."
+- **Eredmény:** A felhasználó most már válthat a "Generáló" és "Kedvencek" nézet között, ahol megtekintheti a korábban mentett receptjeit.
+
+### 18. Globális Bevásárlólista
+- **Eszköz:** Google Gemini, GitHub Copilot
+- **Feladat:** A specifikáció F05-ös pontjának ("Bevásárlólista Kezelés") megvalósítása.
+- **Prompt:** "Create a shopping list feature. Backend: Add `ShoppingItem` model and endpoints (POST/GET/DELETE). Frontend: Add a button next to ingredients to add them to the list, and create a new view to manage these items."
+- **Eredmény:** Teljeskörű bevásárlólista funkcionalitás: a felhasználók elmenthetik a hiányzó alapanyagokat egy központi listára, amit külön nézetben kezelhetnek.
+
+### 19. Bevásárlólista "Pipálása"
+- **Eszköz:** Google Gemini, GitHub Copilot
+- **Feladat:** A specifikáció F05-ös pontjának teljesítése: az elemek legyenek "pipálhatók".
+- **Prompt:** "Create a PATCH endpoint `/shopping-list/{id}` that toggles the `is_purchased` boolean field of a shopping item. Update the React frontend to show a checkbox next to each item and call this endpoint on change."
+- **Eredmény:** A bevásárlólistán megjelentek a checkboxok, a tételek állapota (megvéve/nincs megvéve) most már mentődik az adatbázisba.

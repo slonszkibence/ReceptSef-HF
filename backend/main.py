@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from sqlmodel import Session, select
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from models import ShoppingItem
 
 from database import create_db_and_tables, get_session
 from models import Recipe, User
@@ -180,3 +181,60 @@ def get_recipes(
     # Csak a saját receptjeit látja!
     recipes = session.exec(select(Recipe).where(Recipe.user_id == current_user.id)).all()
     return recipes
+
+class ShoppingItemCreate(BaseModel):
+    item_name: str
+
+@app.post("/shopping-list")
+def add_to_shopping_list(
+    item: ShoppingItemCreate,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    # Hozzáadás a listához (Userhez kötve)
+    new_item = ShoppingItem(item_name=item.item_name, user_id=current_user.id)
+    session.add(new_item)
+    session.commit()
+    session.refresh(new_item)
+    return {"message": "Hozzáadva a listához", "item": new_item}
+
+@app.get("/shopping-list")
+def get_shopping_list(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    # Csak a saját listáját látja
+    items = session.exec(select(ShoppingItem).where(ShoppingItem.user_id == current_user.id)).all()
+    return items
+
+@app.delete("/shopping-list/{item_id}")
+def delete_shopping_item(
+    item_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    # Törlés (csak ha a sajátja)
+    item = session.exec(select(ShoppingItem).where(ShoppingItem.id == item_id, ShoppingItem.user_id == current_user.id)).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Elem nem található")
+    
+    session.delete(item)
+    session.commit()
+    return {"message": "Törölve"}
+
+@app.patch("/shopping-list/{item_id}")
+def toggle_shopping_item(
+    item_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user)
+):
+    item = session.exec(select(ShoppingItem).where(ShoppingItem.id == item_id, ShoppingItem.user_id == current_user.id)).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Elem nem található")
+    
+    # Átfordítjuk az állapotot (True -> False, False -> True)
+    item.is_purchased = not item.is_purchased
+    session.add(item)
+    session.commit()
+    session.refresh(item)
+    return item
