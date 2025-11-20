@@ -77,3 +77,18 @@ button:hover:not(:disabled) { background-color: #3aa876; }
 }
 
 .error { color: red; margin-top: 10px; }
+
+.save-button {
+  background-color: #3498db; /* Kék szín */
+  font-size: 14px;
+  padding: 8px 15px;
+}
+
+.save-button:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.save-button:disabled {
+  background-color: #2ecc71; /* Zöld, ha sikeres */
+  cursor: default;
+}

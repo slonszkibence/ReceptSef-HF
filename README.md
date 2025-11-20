@@ -61,3 +61,21 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Feladat:** Végpont készítése, amivel a generált recept elmenthető az adatbázisba.
 - **Prompt:** "Create a POST endpoint `/save-recipe` in FastAPI. It should take the recipe data, create a new `Recipe` record using the SQLModel session, and commit it to the database."
 - **Eredmény:** Elkészült a `/save-recipe` végpont, így a generált receptek most már perzisztensen tárolódnak.
+
+### 11. Frontend Mentés Gomb és Visszajelzés
+- **Eszköz:** Google Gemini
+- **Feladat:** A mentés funkció kivezetése a felhasználói felületre vizuális visszajelzéssel.
+- **Prompt:** "Add a 'Save to Favorites' button to the React recipe card. When clicked, it should call the POST /save-recipe endpoint. Show a loading state and change the button text to 'Sikeresen mentve! ✅' upon success."
+- **Eredmény:** A gomb megjelent, kattintásra meghívja a backendet és zöldre vált siker esetén.
+
+### 12. Hibaelhárítás - JSON Formátum és SyntaxError
+- **Eszköz:** Google Gemini
+- **Probléma:** A frontend `SyntaxError`-t dobott, mert az MI válasza néha tartalmazott Markdown formázást (` ```json `) vagy bevezető szöveget, amit a `JSON.parse` nem tudott feldolgozni.
+- **Prompt:** "I am getting SyntaxError in React because Gemini returns markdown formatting. Update the Python code to strip '```json' and '```' from the response, and extract only the text between the first '{' and last '}' characters."
+- **Eredmény:** Implementáltam egy tisztító logikát a backendben, ami kivágja a valid JSON részt a szövegből.
+
+### 13. Backend Stabilizálás - JSON Mode és API Kulcs
+- **Eszköz:** Google Gemini
+- **Probléma:** A generálás néha instabil volt, illetve `404 Model not found` és API kulcs hibák léptek fel.
+- **Prompt:** "Update the GenerativeModel configuration to use 'response_mime_type': 'application/json' to guarantee valid JSON output. "
+- **Eredmény:** A `response_mime_type` használatával a Google szervere most már garantáltan JSON-t küld, így a manuális szövegtisztítás feleslegessé vált (bár biztonságból benne maradt). A változónevek javítása után a kommunikáció stabil.
