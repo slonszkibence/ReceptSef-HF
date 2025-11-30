@@ -140,7 +140,18 @@ async def generate_recipe(request: IngredientRequest):
     ingredients_text = ", ".join(request.ingredients)
     prompt = f"""
     Te egy profi séf vagy. Készíts egy receptet a következő alapanyagok felhasználásával: {ingredients_text}.
-    A válaszod kövesse PONTOSAN ezt a JSON sémát:
+    
+    FONTOS SZABÁLYOK:
+    1. Ha a megadott alapanyagokból NEM lehet ehető ételt készíteni (pl. építőanyagok, mérgező dolgok, értelmetlen szavak), 
+       VAGY túl kevés az információ egy recepthez, akkor PONTOSAN ezt a JSON-t küldd vissza:
+       {{
+           "title": "Nincs találat",
+           "time": "0 perc",
+           "ingredients": [],
+           "steps": []
+       }}
+
+    2. Ha van értelmes recept, akkor a válaszod kövesse ezt a sémát:
     {{
         "title": "Étel neve magyarul",
         "time": "Elkészítési idő (pl. 30 perc)",

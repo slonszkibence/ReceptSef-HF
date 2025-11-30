@@ -1,10 +1,16 @@
 # backend/database.py
 from sqlmodel import SQLModel, create_engine, Session
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 # Ellenőrizd, hogy itt a jó jelszó van-e! (A hiba alapján úgy tűnik, ez már jó)
-DATABASE_URL = "postgresql://postgres:admin@localhost/receptsef"
+database_url = os.getenv("DATABASE_URL")
 
-engine = create_engine(DATABASE_URL, echo=True)
+if not database_url:
+    raise ValueError("DATABASE_URL környezeti változó nincs beállítva.")
+
+engine = create_engine(database_url, echo=True)
 
 def create_db_and_tables():
     # --- EZT A SORT SZÚRD BE IDE! ---

@@ -159,9 +159,26 @@ function App() {
         body: JSON.stringify({ ingredients: inputText.split(',') }),
       });
       if (!response.ok) throw new Error('Hiba generáláskor');
+      
       const data = await response.json();
-      setRecipe(JSON.parse(data.recipe_json));
-    } catch (err) { setError('Hiba történt a generálás során.'); } finally { setLoading(false); }
+      const recipeData = JSON.parse(data.recipe_json);
+
+      // --- ÚJ RÉSZ: Ellenőrizzük, hogy talált-e receptet ---
+      if (recipeData.title === "Nincs találat" || recipeData.ingredients.length === 0) {
+        // Nem hiba, de nem is recept -> Üzenet a felhasználónak
+        setError('Sajnos ezekből nem tudtam receptet kitalálni. Próbálj megadni más hozzávalókat!');
+      } else {
+        // Minden rendben, van recept
+        setRecipe(recipeData);
+      }
+      // -----------------------------------------------------
+
+    } catch (err) { 
+      console.error(err);
+      setError('Technikai hiba történt a generálás során.'); // Ez marad a valódi hibákra
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const handleSave = async () => {
