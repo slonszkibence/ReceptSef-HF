@@ -129,7 +129,7 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Eredmény:** A backend most már felismeri a rossz bemenetet, a frontend pedig a technikai hibaüzenet helyett barátságos tájékoztatást ír ki a felhasználónak.
 
 ## Projekt Leírás
-A **ReceptSef** egy mesterséges intelligenciával támogatott webalkalmazás, amely segít a felhasználóknak a rendelkezésre álló alapanyagokból recepteket generálni. Az alkalmazás **Full-Stack** architektúrára épül (Python FastAPI backend + React frontend), **PostgreSQL** adatbázist használ a perzisztens tároláshoz, és a **Google Gemini 1.5 Flash** modelljét a kreatív tartalomgeneráláshoz.
+A **ReceptSef** egy mesterséges intelligenciával támogatott webalkalmazás, amely segít a felhasználóknak a rendelkezésre álló alapanyagokból recepteket generálni. Az alkalmazás **Full-Stack** architektúrára épül (Python FastAPI backend + React frontend), **PostgreSQL** adatbázist használ a perzisztens tároláshoz, és a **Google Gemini 2.5 Flash** modelljét a kreatív tartalomgeneráláshoz.
 
 ### Fő Funkciók
 * 🥗 **Recept Generálás:** Alapanyagok alapján MI segítségével.
