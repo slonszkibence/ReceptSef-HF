@@ -34,14 +34,14 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 
 ### 6. Backend és Frontend Összekötése (CORS)
 - **Eszköz:** Google Gemini
-- **Feladat:** Engedélyezni, hogy a böngészőben futó React alkalmazás (localhost:5173) elérje a Python szervert.
-- **Prompt:** "Adj CORS middleware-t a FastAPI alkalmazáshoz, hogy engedélyezze a kéréseket a localhost:5173 címről. Szeretném javítani a 'Cross-Origin Request Blocked' hibát."
+- **Feladat:** Engedélyezni, hogy a böngészőben futó React alkalmazás elérje a Python szervert.
+- **Prompt:** - **Prompt:** "A frontend nem tud csatlakozni a backendhez, CORS hibát ír a böngésző. Mit kell beállítani FastAPI-ban, hogy engedje a localhost:5173-at?". Szeretném javítani a 'Cross-Origin Request Blocked' hibát."
 - **Eredmény:** A `main.py`-ba bekerült a `CORSMiddleware`, a kommunikáció megnyílt a két oldal között.
 
 ### 7. Frontend Létrehozása
 - **Eszköz:** Google Gemini / GitHub Copilot
 - **Feladat:** React kliens készítése TypeScript alapokon.
-- **Prompt:** "Készíts egy React komponenst TypeScript használatával, Tailwind CSS-sel vagy egyszerű inline stílusokkal. Legyen benne egy beviteli mező az alapanyagokhoz, egy 'Recept Generálás' gomb, és ellenőrizd a kapcsolatot a backend POST /generate-recipe végpontjának meghívásával a fetch használatával. Jelenítsd meg az eredményt megfelelően."
+- **Prompt:** "Írj egy React komponenst. Legyen benne egy szövegmező a hozzávalóknak és egy gomb. Ha megnyomom, küldje el az adatokat a backendnek, és a választ jelenítse meg."
 - **Eredmény:** Elkészült az `App.tsx` kódja, amely kezeli a betöltési állapotot és megjeleníti a receptkártyát.
 
 ### 8. Hibaelhárítás - Modell Frissítés (404 Hiba)
@@ -65,7 +65,7 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 ### 11. Frontend Mentés Gomb és Visszajelzés
 - **Eszköz:** Google Gemini
 - **Feladat:** A mentés funkció kivezetése a felhasználói felületre vizuális visszajelzéssel.
-- **Prompt:** "Adj egy 'Mentés a Kedvencekbe' gombot a React receptkártyához. Kattintáskor hívja meg a POST /save-recipe végpontot. Mutass töltési állapotot, és siker esetén változtasd a gomb szövegét 'Sikeresen mentve! ✅'-re."
+- **Prompt:** "Adj egy 'Mentés a Kedvencekbe' gombot a React receptkártyához. Kattintáskor hívja meg a POST /save-recipe végpontot. Mutass töltési állapotot, és siker esetén változtasd a gomb szövegét!"
 - **Eredmény:** A gomb megjelent, kattintásra meghívja a backendet és zöldre vált siker esetén.
 
 ### 12. Hibaelhárítás - JSON Formátum és SyntaxError
@@ -83,13 +83,13 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 ### 14. Felhasználókezelés és Autentikáció (Backend)
 - **Eszköz:** Google Gemini / GitHub Copilot
 - **Feladat:** A specifikációnak megfelelően a regisztráció és bejelentkezés megvalósítása, hogy a receptek felhasználókhoz kötöttek legyenek.
-- **Prompt:** "Implementálj JWT alapú autentikációt FastAPI-ban a `python-jose` és `passlib` használatával. Hozz létre `/register` és `/token` végpontokat. Frissítsd a `User` modellt a hashelt jelszavak tárolásához. Védd le a `/save-recipe` útvonalat, hogy csak bejelentkezett felhasználók menthessenek recepteket."
+- **Prompt:** "Implementálj JWT alapú autentikációt FastAPI-ban. Hozz létre `/register` és `/token` végpontokat. Frissítsd a `User` modellt a hashelt jelszavak tárolásához. Védd le a `/save-recipe` útvonalat, hogy csak bejelentkezett felhasználók menthessenek recepteket."
 - **Eredmény:** Elkészült a biztonságos autentikáció, a jelszavak hashelve tárolódnak, a védett végpontok JWT tokent várnak.
 
 ### 15. Login Felület és Token Kezelés (Frontend)
 - **Eszköz:** Google Gemini
 - **Feladat:** Bejelentkező és regisztrációs képernyő készítése a React oldalon.
-- **Prompt:** "Készíts egy Bejelentkezés/Regisztráció nézetet React-ben. A kapott JWT tokent mentsd el a localStorage-ba. Frissítsd a `handleSave` függvényt, hogy tartalmazza az 'Authorization: Bearer <token>' fejlécet, amikor kérést küld a backendnek."
+- **Prompt:** "Készíts egy Bejelentkezés/Regisztráció nézetet React-ben. A kapott JWT tokent mentsd el a localStorage-ba. Frissítsd a `handleSave` függvényt.
 - **Eredmény:** A frontend kezeli a belépést, a tokent elmenti, és nézetet vált (Login képernyő <-> Alkalmazás) a jogosultság alapján.
 
 ### 16. Hibaelhárítás - Bcrypt Kompatibilitás
@@ -101,7 +101,7 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 ### 17. Kedvencek Listázása és Adattranszformáció
 - **Eszköz:** GitHub Copilot
 - **Feladat:** A mentett receptek megjelenítése a felületen (Read művelet).
-- **Prompt:** "Adj egy 'Kedvencek' nézetet az alkalmazáshoz. Kérd le a mentett recepteket a `GET /recipes` végpontról. Vedd figyelembe, hogy a hozzávalók és lépések JSON stringként vannak tárolva az adatbázisban, ezért a lista renderelése előtt alakítsd vissza őket tömbbé a `JSON.parse` segítségével."
+- **Prompt:** "Adj egy 'Kedvencek' nézetet az alkalmazáshoz. Kérd le a mentett recepteket a `GET /recipes` végpontról. Vedd figyelembe, hogy a hozzávalók és lépések JSON stringként vannak tárolva az adatbázisban."
 - **Eredmény:** A felhasználó most már válthat a "Generáló" és "Kedvencek" nézet között, ahol megtekintheti a korábban mentett receptjeit.
 
 ### 18. Globális Bevásárlólista
@@ -128,15 +128,50 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Prompt:** "Módosítsd a rendszer promptot úgy, hogy tartalmazzon kivételkezelést: ha a bemenetből nem készíthető ehető étel, akkor a modell NE hibát dobjon, hanem egy speciális JSON-t küldjön vissza `{'title': 'Nincs találat'}` tartalommal."
 - **Eredmény:** A backend most már felismeri a rossz bemenetet, a frontend pedig a technikai hibaüzenet helyett barátságos tájékoztatást ír ki a felhasználónak.
 
-## Projekt Leírás
-A **ReceptSef** egy mesterséges intelligenciával támogatott webalkalmazás, amely segít a felhasználóknak a rendelkezésre álló alapanyagokból recepteket generálni. Az alkalmazás **Full-Stack** architektúrára épül (Python FastAPI backend + React frontend), **PostgreSQL** adatbázist használ a perzisztens tároláshoz, és a **Google Gemini 1.5 Flash** modelljét a kreatív tartalomgeneráláshoz.
+### 22. Dokumentáció megírásának segítése
 
-### Fő Funkciók
-* 🥗 **Recept Generálás:** Alapanyagok alapján MI segítségével.
-* 💾 **Mentés:** Kedvenc receptek elmentése saját profilba.
-* 🔐 **Autentikáció:** Biztonságos regisztráció és belépés (JWT).
-* 🛒 **Bevásárlólista:** Hiányzó hozzávalók listázása, törlése és "kipipálása".
-* 📱 **Reszponzív Felület:** Modern, felhasználóbarát megjelenés.
+- **Eszköz:** Google Gemini
+- **Feladat:** Dokumentáció megírása, eddig adott promptjaim leírása szakszerűbb megfogalmazással
+- **Prompt:** Írd meg a feladathoz tartozó dokumentációt! Nézd át az általam megadott promptokat, foglald össze, hogy előtte mi volt a probléma, mi a feladat, prompt szövegét és mi lett az eredménye.
+- **Eredmény:** Dokumentáció elkészült.
+
+## 📖 Projekt Leírás
+
+A **ReceptSef** egy modern, mesterséges intelligenciával támogatott webalkalmazás, amelynek célja, hogy innovatív megoldást nyújtson a mindennapi étkezés-tervezés kihívásaira. A rendszer a háztartásban éppen rendelkezésre álló alapanyagok felhasználásával generál kreatív és pontos recepteket, ezzel segítve az élelmiszerpazarlás csökkentését és a döntéshozatal megkönnyítését.
+
+Technológiai szempontból az alkalmazás egy robusztus **Full-Stack** megoldás:
+* A **Backend** oldalon **Python FastAPI** gondoskodik a gyors és aszinkron adatfeldolgozásról, valamint a **Google Gemini 2.5 Flash** nyelvi modell integrációjáról.
+* A **Frontend** egy dinamikus **React (Vite + TypeScript)** felület, amely biztosítja a gördülékeny felhasználói élményt.
+* Az adatok (felhasználók, receptek, bevásárlólisták) tartós és biztonságos tárolásáért egy **PostgreSQL** relációs adatbázis felel, **SQLModel** ORM segítségével.
+
+### ✨ Részletes Funkciólista
+
+Az alkalmazás az alábbi kulcsfontosságú szolgáltatásokat nyújtja:
+
+* 🥗 **Intelligens Recept Generálás (AI)**
+    * A felhasználó szabadszöveges formában adhatja meg a rendelkezésre álló hozzávalókat.
+    * A rendszer a **Google Gemini** generatív modelljét használja, amely szigorú *Prompt Engineering* szabályok alapján strukturált (JSON) formátumban állítja elő a receptet.
+    * A válasz tartalmazza az étel nevét, pontos elkészítési idejét, a hozzávalók listáját és a lépésről lépésre követhető elkészítési útmutatót.
+    * *Kivételkezelés:* Az MI képes felismerni a nem élelmiszer jellegű bemeneteket, és ilyenkor udvariasan jelzi, hogy nem tud receptet készíteni.
+
+* 💾 **Személyes Recepttár (Kedvencek)**
+    * A generált receptek egyetlen kattintással elmenthetők a felhasználó saját profiljába.
+    * Az adatok perzisztens módon a PostgreSQL adatbázisba kerülnek, így azok a későbbi belépések során is elérhetők maradnak.
+    * A "Kedvencek" nézetben a mentett receptek áttekinthető kártyák formájában jelennek meg, lenyitható részletekkel.
+
+* 🔐 **Biztonságos Felhasználókezelés**
+    * A rendszer védi a felhasználók adatait: a receptek és bevásárlólisták privátak, csak a tulajdonosuk férhet hozzájuk.
+    * A regisztráció és bejelentkezés **JWT (JSON Web Token)** alapú hitelesítéssel történik.
+    * A jelszavakat soha nem tároljuk nyílt szövegként; a backend **bcrypt** hash-elést alkalmaz a maximális biztonság érdekében.
+
+* 🛒 **Interaktív Bevásárlólista**
+    * A receptek hozzávalói közvetlenül hozzáadhatók egy központi bevásárlólistához.
+    * A lista elemei valós időben kezelhetők: a felhasználó "kipipálhatja" (megvettem státusz) vagy törölheti a tételeket.
+    * Az állapotváltozások (PATCH kérések) azonnal szinkronizálódnak az adatbázissal.
+
+* 📱 **Reszponzív és Modern UI**
+    * A felületet úgy terveztük, hogy asztali számítógépen és mobil eszközökön is kényelmesen használható legyen.
+    * A felhasználót vizuális visszajelzések (betöltési animációk, siker- és hibaüzenetek, interaktív gombok) segítik a navigációban.
 
 ---
 
@@ -173,8 +208,11 @@ python init_db.py
 
 # Szerver indítása
 uvicorn main:app --reload
+```
 
-### 2. Backend Beüzemelése
+
+### 3. Frontend Beüzemelése
+```bash
 cd frontend
 
 # Csomagok telepítése
@@ -182,9 +220,12 @@ npm install
 
 # Fejlesztői szerver indítása
 npm run dev
+```
 
-```markdown
----
-**Szerző:** Slonszki Bence
-**Neptun kód:** DBHKPT
-**Dátum:** 2025.11.30.
+
+## 👤 Szerzői Információk
+
+- **Név:** Slonszki Bence
+- **Neptun kód:** DBHKPT
+- **Dátum:** 2025.11.30.
+- **Tárgy:** Szoftverfejlesztés MI támogatással
