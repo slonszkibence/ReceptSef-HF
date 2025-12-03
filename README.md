@@ -1,5 +1,176 @@
-# ReceptSef-HF
+# 👨‍🍳 ReceptSef – Intelligens Konyhai Asszisztens
 Szoftverfejlesztés MI támogatással házi feladat - Recept generáló alkalmazás
+
+## 📖 Projekt Leírás
+
+A **ReceptSef** egy Full-Stack webalkalmazás, amely a mindennapi étkezés-tervezés egyik leggyakoribb problémájára nyújt megoldást: *"Mi legyen a vacsora abból, ami itthon van?"*
+A hagyományos receptkeresőkkel ellentétben ez a rendszer nem egy előre megírt adatbázisban keres, hanem a Google Gemini Generatív MI segítségével valós időben alkot meg recepteket a felhasználó által megadott alapanyagok alapján. A rendszer figyelembe veszi a hozzávalók harmóniáját, és strukturált, lépésről lépésre követhető útmutatót készít.
+Az alkalmazás nemcsak ötleteket ad, hanem teljes körű konyhai menedzserként funkcionál: kezeli a bevásárlólistát, tárolja a kedvenc recepteket, és biztonságos felhasználói fiókokat biztosít.
+
+## ✨ Kiemelt Funkciók
+
+### 🧠 1. MI-Alapú Recept Generálás
+
+* A felhasználó szabadszöveges formában adhatja meg a rendelkezésre álló hozzávalókat.
+
+* **Dinamikus alkotás**: Bármilyen alapanyag-kombinációból képes értelmes receptet készíteni
+* **Strukturált válaszok**: Az MI nem szabad szöveget, hanem szigorúan strukturált adatokat (JSON) küld vissza, így a felületen kártyák formájában jelennek meg az adatok
+* **Intelligens szűrés**: A rendszer felismeri, ha a bemenet nem élelmiszer (pl. "beton, tégla"), és udvariasan jelzi, hogy ebből nem tud főzni
+
+### 💾 2. Személyes Recepttár
+
+* **Perzisztens tárolás**: A generált receptek egy kattintással elmenthetők a felhasználó privát profiljába
+
+* **Részletes nézet**: A mentett receptek később bármikor visszanézhetők, az elkészítési idővel és utasításokkal együtt
+
+* Az adatok perzisztens módon a PostgreSQL adatbázisba kerülnek, így azok a későbbi belépések során is elérhetők maradnak.
+
+### 🛒 3. Okos Bevásárlólista
+
+* **Interaktív kezelés**: A recept hozzávalói egy gombnyomással hozzáadhatók a központi bevásárlólistához
+
+* **Valós idejű státusz**: A lista elemei "kipipálhatók" (megvettem/nincs meg), az állapotváltozás azonnal mentődik az adatbázisba
+
+### 🔐 4. Biztonság
+
+* **Autentikáció**: Regisztráció és bejelentkezés JWT (JSON Web Token) alapon
+
+* **Adatvédelem**: A jelszavakat a rendszer bcrypt hash-eléssel tárolja, soha nem nyílt szövegként
+
+* Minden felhasználó kizárólag a saját adataihoz fér hozzá
+
+### 📱 5. Reszponzív és Modern UI
+* A felületet úgy terveztük, hogy asztali számítógépen és mobil eszközökön is kényelmesen használható legyen.
+* A felhasználót vizuális visszajelzések (betöltési animációk, siker- és hibaüzenetek, interaktív gombok) segítik a navigációban.
+
+## 🛠️ Technológiai Stack
+
+A projekt modern, iparági szabványnak számító technológiákra épül, biztosítva a skálázhatóságot és a karbantarthatóságot.
+
+| Terület | Technológia | Leírás |
+| :--- | :--- | :--- |
+| **Backend** | Python (FastAPI) | Nagy teljesítményű, aszinkron API keretrendszer |
+| **Frontend** | React (Vite + TS) | Komponens alapú UI fejlesztés TypeScript típusbiztonsággal |
+| **Adatbázis** | PostgreSQL | Megbízható relációs adatbázis az adatok tárolására |
+| **ORM** | SQLModel | A Pydantic és SQLAlchemy előnyeit egyesítő adatmodellező |
+| **AI Model** | Google Gemini 2.5 Flash | Gyors és költséghatékony LLM a tartalomgeneráláshoz |
+| **Stílus** | CSS3 / Flexbox | Reszponzív design mobil és asztali nézethez |
+
+Technológiai szempontból az alkalmazás egy robusztus **Full-Stack** megoldás:
+* A **Backend** oldalon **Python FastAPI** gondoskodik a gyors és aszinkron adatfeldolgozásról, valamint a **Google Gemini 2.5 Flash** nyelvi modell integrációjáról.
+* A **Frontend** egy dinamikus **React (Vite + TypeScript)** felület, amely biztosítja a gördülékeny felhasználói élményt.
+* Az adatok (felhasználók, receptek, bevásárlólisták) tartós és biztonságos tárolásáért egy **PostgreSQL** relációs adatbázis felel, **SQLModel** ORM segítségével.
+
+## 🏗️ Rendszerarchitektúra és Adatmodell
+
+Az alkalmazás kliens-szerver architektúrát követ. A Frontend és a Backend REST API végpontokon keresztül kommunikál.
+
+**Adatbázis Struktúra (ERD)**
+A rendszer három fő táblát használ, amelyek kapcsolatban állnak egymással:
+
+**User (Felhasználó):**
+Tárolja a hitelesítési adatokat (username, password_hash)
+Kapcsolat: Egy felhasználónak több receptje és bevásárlólista eleme lehet
+
+**Recipe (Recept):**
+Tárolja a recept adatait: Cím, Idő, Hozzávalók (JSON stringként), Elkészítés
+Foreign Key: user_id (a tulajdonos)
+
+**ShoppingItem (Bevásárlólista Elem):**
+Tárolja a termék nevét és státuszát (is_purchased: boolean)
+Foreign Key: user_id
+
+
+## 📂 Projekt Szerkezet
+
+```text
+ReceptSef-HF/
+├── backend/                # Python FastAPI Szerver
+│   ├── venv/               # Virtuális környezet
+│   ├── main.py             # A backend belépési pontja és végpontok
+│   ├── models.py           # SQLModel adatbázis modellek
+│   ├── database.py         # Adatbázis kapcsolat
+│   ├── init_db.py          # Adatbázis inicializáló script
+│   └── requirements.txt    # Python függőségek
+├── frontend/               # React Kliens
+│   ├── src/
+│   │   ├── App.tsx         # A fő alkalmazás logika
+│   │   └── App.css         # Stílusok
+│   ├── package.json        # Node.js függőségek
+│   └── vite.config.ts      # Vite konfiguráció
+├── docs/                   # Dokumentációk
+│   └── specifikacio.pdf
+└── README.md
+```
+---
+
+## 🚀 Telepítési és Indítási Útmutató
+
+A futtatáshoz szükséges: **Python 3.10+**, **Node.js**, **PostgreSQL**.
+
+### 1. Adatbázis Előkészítése
+1.  Győződjön meg róla, hogy fut a PostgreSQL szervere.
+2.  Hozzon létre egy üres adatbázist `receptsef` néven.
+
+### 2. Backend Beüzemelése
+```bash
+cd backend
+
+# Virtuális környezet létrehozása és aktiválása
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Linux/Mac:
+source venv/bin/activate
+
+# Csomagok telepítése
+pip install -r requirements.txt
+
+# Környezeti változók beállítása
+# Hozzon létre egy .env fájlt a .env.example alapján!
+# Tartalma legyen:
+# API_KEY=Sajat_Google_AI_Studio_Kulcs
+# DATABASE_URL=postgresql://felhasznalo:jelszo@localhost/receptsef
+
+# Adatbázis táblák inicializálása
+python init_db.py
+
+# Szerver indítása
+uvicorn main:app --reload
+```
+
+
+### 3. Frontend Beüzemelése
+```bash
+cd frontend
+
+# Csomagok telepítése
+npm install
+
+# Fejlesztői szerver indítása
+npm run dev
+```
+
+## 📡 API Végpontok (Endpointok)
+A backend az alábbi főbb REST végpontokat biztosítja:
+
+### Auth
+
+* POST /register: Új felhasználó regisztrálása
+* POST /token: Bejelentkezés és JWT token igénylése
+
+### Receptek
+
+* POST /generate-recipe: MI hívás a recept generálásához (publikus/védett)
+* GET /recipes: A bejelentkezett felhasználó mentett receptjeinek lekérése
+* POST /save-recipe: Generált recept mentése az adatbázisba
+
+### Bevásárlólista
+
+* GET /shopping-list: Lista lekérése
+* POST /shopping-list: Új tétel hozzáadása
+* DELETE /shopping-list/{id}: Tétel törlése
+* PATCH /shopping-list/{id}: Státusz módosítása (kész/nincs kész)
 
 ## MI Használati Napló
 A követelményeknek megfelelően itt dokumentálom a fejlesztés során használt promptokat és az MI eszközökkel való együttműködést.
@@ -135,97 +306,10 @@ A követelményeknek megfelelően itt dokumentálom a fejlesztés során haszná
 - **Prompt:** Írd meg a feladathoz tartozó dokumentációt! Nézd át az általam megadott promptokat, foglald össze, hogy előtte mi volt a probléma, mi a feladat, prompt szövegét és mi lett az eredménye.
 - **Eredmény:** Dokumentáció elkészült.
 
-## 📖 Projekt Leírás
-
-A **ReceptSef** egy modern, mesterséges intelligenciával támogatott webalkalmazás, amelynek célja, hogy innovatív megoldást nyújtson a mindennapi étkezés-tervezés kihívásaira. A rendszer a háztartásban éppen rendelkezésre álló alapanyagok felhasználásával generál kreatív és pontos recepteket, ezzel segítve az élelmiszerpazarlás csökkentését és a döntéshozatal megkönnyítését.
-
-Technológiai szempontból az alkalmazás egy robusztus **Full-Stack** megoldás:
-* A **Backend** oldalon **Python FastAPI** gondoskodik a gyors és aszinkron adatfeldolgozásról, valamint a **Google Gemini 2.5 Flash** nyelvi modell integrációjáról.
-* A **Frontend** egy dinamikus **React (Vite + TypeScript)** felület, amely biztosítja a gördülékeny felhasználói élményt.
-* Az adatok (felhasználók, receptek, bevásárlólisták) tartós és biztonságos tárolásáért egy **PostgreSQL** relációs adatbázis felel, **SQLModel** ORM segítségével.
-
-### ✨ Részletes Funkciólista
-
-Az alkalmazás az alábbi kulcsfontosságú szolgáltatásokat nyújtja:
-
-* 🥗 **Intelligens Recept Generálás (AI)**
-    * A felhasználó szabadszöveges formában adhatja meg a rendelkezésre álló hozzávalókat.
-    * A rendszer a **Google Gemini** generatív modelljét használja, amely szigorú *Prompt Engineering* szabályok alapján strukturált (JSON) formátumban állítja elő a receptet.
-    * A válasz tartalmazza az étel nevét, pontos elkészítési idejét, a hozzávalók listáját és a lépésről lépésre követhető elkészítési útmutatót.
-    * *Kivételkezelés:* Az MI képes felismerni a nem élelmiszer jellegű bemeneteket, és ilyenkor udvariasan jelzi, hogy nem tud receptet készíteni.
-
-* 💾 **Személyes Recepttár (Kedvencek)**
-    * A generált receptek egyetlen kattintással elmenthetők a felhasználó saját profiljába.
-    * Az adatok perzisztens módon a PostgreSQL adatbázisba kerülnek, így azok a későbbi belépések során is elérhetők maradnak.
-    * A "Kedvencek" nézetben a mentett receptek áttekinthető kártyák formájában jelennek meg, lenyitható részletekkel.
-
-* 🔐 **Biztonságos Felhasználókezelés**
-    * A rendszer védi a felhasználók adatait: a receptek és bevásárlólisták privátak, csak a tulajdonosuk férhet hozzájuk.
-    * A regisztráció és bejelentkezés **JWT (JSON Web Token)** alapú hitelesítéssel történik.
-    * A jelszavakat soha nem tároljuk nyílt szövegként; a backend **bcrypt** hash-elést alkalmaz a maximális biztonság érdekében.
-
-* 🛒 **Interaktív Bevásárlólista**
-    * A receptek hozzávalói közvetlenül hozzáadhatók egy központi bevásárlólistához.
-    * A lista elemei valós időben kezelhetők: a felhasználó "kipipálhatja" (megvettem státusz) vagy törölheti a tételeket.
-    * Az állapotváltozások (PATCH kérések) azonnal szinkronizálódnak az adatbázissal.
-
-* 📱 **Reszponzív és Modern UI**
-    * A felületet úgy terveztük, hogy asztali számítógépen és mobil eszközökön is kényelmesen használható legyen.
-    * A felhasználót vizuális visszajelzések (betöltési animációk, siker- és hibaüzenetek, interaktív gombok) segítik a navigációban.
-
----
-
-## 🚀 Telepítési és Indítási Útmutató
-
-A futtatáshoz szükséges: **Python 3.10+**, **Node.js**, **PostgreSQL**.
-
-### 1. Adatbázis Előkészítése
-1.  Győződjön meg róla, hogy fut a PostgreSQL szervere.
-2.  Hozzon létre egy üres adatbázist `receptsef` néven.
-
-### 2. Backend Beüzemelése
-```bash
-cd backend
-
-# Virtuális környezet létrehozása és aktiválása
-python -m venv venv
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-
-# Csomagok telepítése
-pip install -r requirements.txt
-
-# Környezeti változók beállítása
-# Hozzon létre egy .env fájlt a .env.example alapján!
-# Tartalma legyen:
-# API_KEY=Sajat_Google_AI_Studio_Kulcs
-# DATABASE_URL=postgresql://felhasznalo:jelszo@localhost/receptsef
-
-# Adatbázis táblák inicializálása
-python init_db.py
-
-# Szerver indítása
-uvicorn main:app --reload
-```
-
-
-### 3. Frontend Beüzemelése
-```bash
-cd frontend
-
-# Csomagok telepítése
-npm install
-
-# Fejlesztői szerver indítása
-npm run dev
-```
-
-
 ## 👤 Szerzői Információk
 
 - **Név:** Slonszki Bence
 - **Neptun kód:** DBHKPT
 - **Dátum:** 2025.11.30.
 - **Tárgy:** Szoftverfejlesztés MI támogatással
+
